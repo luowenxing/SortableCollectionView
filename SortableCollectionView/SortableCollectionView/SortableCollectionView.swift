@@ -9,9 +9,16 @@
 import UIKit
 
 @objc protocol SortableCollectionViewDelegate:NSObjectProtocol {
+    // customize your drag view at sort begin.
     optional func beginDragAndInitDragCell(collectionView:SortableCollectionView,dragCell:UIView)
+    
+    // reset your drag view at sort end
     optional func endDragAndResetDragCell(collectionView:SortableCollectionView,dragCell:UIView)
+    
+    // oprate the sorted cell as you want. e.g. add a delete button if the cell is not be dragged move.
     optional func endDragAndOperateRealCell(collectionView:SortableCollectionView,realCell:UICollectionViewCell,isMoved:Bool)
+    
+    // exchange data source after sorting.
     func exchangeDataSource(fromIndex:NSIndexPath,toIndex:NSIndexPath)
 }
 
@@ -64,8 +71,7 @@ class SortableCollectionView : UICollectionView {
             if let originCell = self.originCell {
                 UIView.animateWithDuration(0.2, animations: {
                     self.sortableDelegate?.endDragAndResetDragCell?(self, dragCell: self.dragView)
-                    self.dragView.frame = originCell.frame
-                    self.dragView.frame.origin.y -= self.contentOffset.y
+                    self.dragView.frame = CGRect(x: originCell.frame.origin.x, y: originCell.frame.origin.y - self.contentOffset.y, width: originCell.frame.width, height: originCell.frame.height)
                 }){
                     _ in
                     self.dragView.removeFromSuperview()

@@ -9,7 +9,8 @@
         <scene sceneID="Etc-qX-Qdm">
             <objects>
                 <tabBarController id="Q6b-8R-v7E" sceneMemberID="viewController">
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="yf2-dm-6kf">
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="yf2-dm-6kf">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -32,7 +33,7 @@
                         <viewControllerLayoutGuide type="bottom" id="TTc-mJ-CTc"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="mM9-IQ-NBD">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UU0-ke-PKM">
@@ -89,7 +90,7 @@
                         <viewControllerLayoutGuide type="bottom" id="lqb-NF-fdi"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="F4d-wL-Z1l">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bWZ-gl-8KV">
