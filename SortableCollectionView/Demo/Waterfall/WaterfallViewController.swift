@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WaterfallViewController: UIViewController, UICollectionViewDataSource, CollectionViewWaterfallLayoutDelegate,SortableCollectionViewDelegate {
+class WaterfallViewController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegate,CollectionViewWaterfallLayoutDelegate,SortableCollectionViewDelegate {
     
     @IBOutlet var collectionView: UICollectionView!
     

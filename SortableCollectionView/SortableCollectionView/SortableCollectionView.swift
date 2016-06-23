@@ -19,7 +19,7 @@ import UIKit
     optional func endDragAndOperateRealCell(collectionView:SortableCollectionView,realCell:UICollectionViewCell,isMoved:Bool)
     
     // exchange data source after sorting.
-    func exchangeDataSource(fromIndex:NSIndexPath,toIndex:NSIndexPath)
+    optional func exchangeDataSource(fromIndex:NSIndexPath,toIndex:NSIndexPath)
 }
 
 class SortableCollectionView : UICollectionView {
@@ -42,47 +42,94 @@ class SortableCollectionView : UICollectionView {
         self.superView = self.superview
     }
     
+    private lazy var isDelegateImplementMovement:Bool = {
+        if let delegate = self.sortableDelegate as? UICollectionViewDataSource {
+            if #available(iOS 9.0, *) {
+                if let _ = delegate.collectionView?(self, canMoveItemAtIndexPath: NSIndexPath(forRow: 0, inSection: 0)) {
+                    return true
+                }
+            }
+        }
+        return false
+    }()
+    
+    
     func panGestureHandler(sender:UILongPressGestureRecognizer) {
         let collectionViewPoint = sender.locationInView(self)
         let viewPoint = sender.locationInView(self.superView)
         if sender.state == .Began {
             if let index = self.indexPathForItemAtPoint(collectionViewPoint),originCell = self.cellForItemAtIndexPath(index) {
-                self.fromIndex = index
-                self.originCell = originCell
-                originCell.hidden = true
-                if let copyable = originCell as? NSCopying {
-                    self.dragView = copyable.copyWithZone(nil) as! UIView
-                } else {
-                    dragView = originCell.snapshotViewAfterScreenUpdates(false)
+                if #available(iOS 9.0, *) {
+                    if isDelegateImplementMovement {
+                        self.sortableDelegate?.beginDragAndInitDragCell?(self, dragCell: originCell)
+                        self.beginInteractiveMovementForItemAtIndexPath(index)
+                        return
+                    }
                 }
-                self.superView.addSubview(dragView)
-                dragView.autoresizesSubviews = false
+                self.beginMoveItemAtIndex(index, cell: originCell)
                 dragView.center = viewPoint
-                self.sortableDelegate?.beginDragAndInitDragCell?(self, dragCell: dragView)
-                self.bringSubviewToFront(dragView)
             }
         } else if sender.state == .Changed {
-            dragView.center = viewPoint
-            self.moveItemToPoint(collectionViewPoint)
-            self.scrollAtEdge()
-        } else if sender.state == .Ended {
-            self.timer?.invalidate()
-            self.timer = nil
-            if let originCell = self.originCell {
-                UIView.animateWithDuration(0.2, animations: {
-                    self.sortableDelegate?.endDragAndResetDragCell?(self, dragCell: self.dragView)
-                    self.dragView.frame = CGRect(x: originCell.frame.origin.x, y: originCell.frame.origin.y - self.contentOffset.y, width: originCell.frame.width, height: originCell.frame.height)
-                }){
-                    _ in
-                    self.dragView.removeFromSuperview()
-                    originCell.hidden = false
-                    var isMoved = false
-                    if let toIndex = self.toIndex {
-                        self.sortableDelegate?.exchangeDataSource(self.fromIndex, toIndex: toIndex)
-                        isMoved = true
-                    }
-                    self.sortableDelegate?.endDragAndOperateRealCell?(self, realCell: originCell, isMoved: isMoved)
+            if #available(iOS 9.0, *) {
+                if isDelegateImplementMovement {
+                    self.updateInteractiveMovementTargetPosition(collectionViewPoint)
+                    return
                 }
+            }
+            self.updateMoveItem(viewPoint, collectionViewPoint: collectionViewPoint)
+        } else if sender.state == .Ended {
+            if #available(iOS 9.0, *) {
+                if isDelegateImplementMovement {
+                    self.endInteractiveMovement()
+                    if let index = self.indexPathForItemAtPoint(collectionViewPoint),originCell = self.cellForItemAtIndexPath(index){
+                        self.sortableDelegate?.endDragAndResetDragCell?(self, dragCell: originCell)
+                    }
+                    return
+                }
+            }
+            self.endMoveItem()
+            
+        }
+    }
+    
+    func beginMoveItemAtIndex(index:NSIndexPath,cell:UICollectionViewCell) {
+        self.fromIndex = index
+        self.originCell = cell
+        cell.hidden = true
+        if let copyable = originCell as? NSCopying {
+            self.dragView = copyable.copyWithZone(nil) as! UIView
+        } else {
+            dragView = cell.snapshotViewAfterScreenUpdates(false)
+        }
+        self.superView.addSubview(dragView)
+        dragView.autoresizesSubviews = false
+        self.sortableDelegate?.beginDragAndInitDragCell?(self, dragCell: dragView)
+        self.bringSubviewToFront(dragView)
+    }
+    
+    func updateMoveItem(viewPoint:CGPoint,collectionViewPoint:CGPoint) {
+        dragView.center = viewPoint
+        self.moveItemToPoint(collectionViewPoint)
+        self.scrollAtEdge()
+    }
+    
+    func endMoveItem() {
+        self.timer?.invalidate()
+        self.timer = nil
+        if let originCell = self.originCell {
+            UIView.animateWithDuration(0.2, animations: {
+                self.sortableDelegate?.endDragAndResetDragCell?(self, dragCell: self.dragView)
+                self.dragView.frame = CGRect(x: originCell.frame.origin.x, y: originCell.frame.origin.y - self.contentOffset.y, width: originCell.frame.width, height: originCell.frame.height)
+            }){
+                _ in
+                self.dragView.removeFromSuperview()
+                originCell.hidden = false
+                var isMoved = false
+                if let toIndex = self.toIndex {
+                    self.sortableDelegate?.exchangeDataSource?(self.fromIndex, toIndex: toIndex)
+                    isMoved = true
+                }
+                self.sortableDelegate?.endDragAndOperateRealCell?(self, realCell: originCell, isMoved: isMoved)
             }
         }
     }
@@ -155,5 +202,6 @@ class SortableCollectionView : UICollectionView {
             }
         }
     }
+    
     
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FlowViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource,UIScrollViewDelegate,SortableCollectionViewDelegate{
+class FlowViewController: UIViewController,UICollectionViewDataSource,UICollectionViewDelegate,SortableCollectionViewDelegate{
 
     
     @IBOutlet weak var collectionView: SortableCollectionView!
@@ -37,15 +37,9 @@ class FlowViewController: UIViewController,UICollectionViewDelegate,UICollection
         return true
     }
     
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        NSLog("\(scrollView.contentOffset)")
-    }
-
-    
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource.count
     }
-    
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
@@ -55,6 +49,15 @@ class FlowViewController: UIViewController,UICollectionViewDelegate,UICollection
         cell.backgroundColor = UIColor.clearColor()
         return cell
     }
+   
+//    uncomment below to test iOS9 original sort api
+//    func collectionView(collectionView: UICollectionView, canMoveItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+//        return true
+//    }
+//    
+//    func collectionView(collectionView: UICollectionView, moveItemAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+//        
+//    }
     
     //#MARK: SortableCollectionViewDelegate
     
@@ -71,6 +74,7 @@ class FlowViewController: UIViewController,UICollectionViewDelegate,UICollection
     
     func endDragAndResetDragCell(collectionView: SortableCollectionView, dragCell: UIView) {
         dragCell.transform = CGAffineTransformMakeScale(1, 1)
+        dragCell.backgroundColor = UIColor.whiteColor()
     }
     
 }
