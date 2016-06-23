@@ -61,7 +61,6 @@ class SortableCollectionView : UICollectionView {
             if let index = self.indexPathForItemAtPoint(collectionViewPoint),originCell = self.cellForItemAtIndexPath(index) {
                 if #available(iOS 9.0, *) {
                     if isDelegateImplementMovement {
-                        self.sortableDelegate?.beginDragAndInitDragCell?(self, dragCell: originCell)
                         self.beginInteractiveMovementForItemAtIndexPath(index)
                         return
                     }
@@ -81,9 +80,6 @@ class SortableCollectionView : UICollectionView {
             if #available(iOS 9.0, *) {
                 if isDelegateImplementMovement {
                     self.endInteractiveMovement()
-                    if let index = self.indexPathForItemAtPoint(collectionViewPoint),originCell = self.cellForItemAtIndexPath(index){
-                        self.sortableDelegate?.endDragAndResetDragCell?(self, dragCell: originCell)
-                    }
                     return
                 }
             }
