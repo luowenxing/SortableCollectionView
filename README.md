@@ -2,10 +2,11 @@
 A sortable `UICollectionView` compatible iOS7+.You can customize your drag view (e.g. add a scale transform and a different background) as you need via delegate method.The speed of scroll is ratio to the distance between drag view and the edge just like the first page collectionView in Alipay iOS app. 
 
 # Demo
-* Flowlayout
+**Flowlayout**
 
 ![Flowlayout](https://raw.githubusercontent.com/luowenxing/SortableCollectionView/master/demoFlow.gif)
-* Waterfall
+
+**Waterfall**
 
 ![Waterfall](https://raw.githubusercontent.com/luowenxing/SortableCollectionView/master/demoWaterfall.gif)
 
@@ -18,7 +19,7 @@ There is no other dependency in `SortableCollectionView`.Just add `SortableColle
 * Implement delegate method in `SortableCollectionViewDelegate` and set `sortableDelegate`.
 ```
 @objc protocol SortableCollectionViewDelegate:NSObjectProtocol {
-    // customize your drag view at sort begin. e.g. 
+    // customize your drag view at sort begin. 
     optional func beginDragAndInitDragCell(collectionView:SortableCollectionView,dragCell:UIView)
     
     // reset your drag view at sort end
